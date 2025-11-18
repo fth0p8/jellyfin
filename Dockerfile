@@ -1,19 +1,15 @@
 FROM jellyfin/jellyfin:latest
 
-# Install rclone and curl
 USER root
 RUN apt-get update && \
     apt-get install -y rclone curl && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Create directories
 RUN mkdir -p /gdrive /root/.config/rclone
 
-# Copy rclone config
 COPY rclone.conf /root/.config/rclone/rclone.conf
 
-# Create startup script that uses rclone's HTTP serve
 RUN echo '#!/bin/bash\n\
 echo "Starting Jellyfin with Google Drive streaming..."\n\
 \n\
@@ -71,22 +67,7 @@ exec /jellyfin/jellyfin \\\n\
   --ffmpeg /usr/lib/jellyfin-ffmpeg/ffmpeg' > /start-stream.sh && \
 chmod +x /start-stream.sh
 
-# Expose ports
 EXPOSE 8096
 
-# Use streaming startup
 ENTRYPOINT []
 CMD ["/start-stream.sh"]
-```
-
-## 🚀 **What This Does:**
-
-1. Lists your Google Drive folders in the logs
-2. Shows you helpful messages about how to access them
-3. Makes them available at `http://localhost:8080`
-
-## 📋 **Your GitHub Repo:**
-```
-your-repo/
-├── Dockerfile       ← Copy the content above
-└── rclone.conf      ← Keep your existing one
