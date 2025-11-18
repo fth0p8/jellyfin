@@ -7,18 +7,17 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Create directory for Google Drive mount point
+# Create directory
 RUN mkdir -p /gdrive
 
-# Copy scripts and config
+# Copy config and startup script
 COPY rclone.conf /root/.config/rclone/rclone.conf
-COPY sync-script.sh /sync-script.sh
-COPY start-all.sh /start-all.sh
-RUN chmod +x /sync-script.sh /start-all.sh
+COPY start-stream.sh /start-stream.sh
+RUN chmod +x /start-stream.sh
 
-# Expose Jellyfin port
-EXPOSE 8096
+# Expose ports
+EXPOSE 8096 8080
 
-# Override entrypoint and use our custom startup
+# Use streaming startup
 ENTRYPOINT []
-CMD ["/start-all.sh"]
+CMD ["/start-stream.sh"]
