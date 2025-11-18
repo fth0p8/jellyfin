@@ -1,23 +1,24 @@
 FROM jellyfin/jellyfin:latest
 
-# Install rclone (no fuse needed)
+# Install rclone
 USER root
 RUN apt-get update && \
-    apt-get install -y rclone curl supervisor && \
+    apt-get install -y rclone && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Create directories
-RUN mkdir -p /gdrive /var/log/supervisor /jellyfin-config
+# Create directory for Google Drive mount point
+RUN mkdir -p /gdrive
 
-# Copy configuration files
-COPY rclone.conf /jellyfin-config/rclone.conf
-COPY supervisord.conf /etc/supervisord.conf
+# Copy scripts and config
+COPY rclone.conf /root/.config/rclone/rclone.conf
 COPY sync-script.sh /sync-script.sh
-RUN chmod +x /sync-script.sh
+COPY start-all.sh /start-all.sh
+RUN chmod +x /sync-script.sh /start-all.sh
 
 # Expose Jellyfin port
 EXPOSE 8096
 
-# Use supervisor to manage both services
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
+# Override entrypoint and use our custom startup
+ENTRYPOINT []
+CMD ["/start-all.sh"]
