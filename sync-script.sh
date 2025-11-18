@@ -8,7 +8,7 @@ sleep 5
 # Initial sync
 echo "Performing initial sync from Google Drive..."
 rclone sync gdrive: /gdrive \
-  --config /config/rclone/rclone.conf \
+  --config /jellyfin-config/rclone.conf \
   --verbose \
   --transfers 4 \
   --checkers 8 \
@@ -21,7 +21,7 @@ while true; do
   echo "Syncing Google Drive at $(date)..."
   
   rclone sync gdrive: /gdrive \
-    --config /config/rclone/rclone.conf \
+    --config /jellyfin-config/rclone.conf \
     --transfers 4 \
     --checkers 8 \
     --fast-list \
